@@ -2,6 +2,20 @@
 (function () {
   const TRIGGER_R = 140;
   let currentId = null;
+  let pendingEnter = null; // {site, t} 入山中，回來時發 back 事件
+
+  // 從子站回來（切分頁/返回/bfcache）→ 發 back 事件給遊戲化模組
+  function settleBack() {
+    if (!pendingEnter) return;
+    const awayMs = Date.now() - pendingEnter.t;
+    const site = pendingEnter.site;
+    pendingEnter = null;
+    if (awayMs >= 15000) window.HMJSBus?.emit?.('back', { site, awayMs });
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') settleBack();
+  });
+  window.addEventListener('pageshow', settleBack);
 
   function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
 
@@ -22,6 +36,11 @@
       ${action}`;
     card.hidden = false;
     document.getElementById('yamen-open')?.addEventListener('click', openYamen);
+    card.querySelector('a.enter-btn')?.addEventListener('click', () => {
+      pendingEnter = { site, t: Date.now() };
+      window.HMJSBus?.emit?.('enter', { site });
+    });
+    window.HMJSBus?.emit?.('card', { site });
   }
   function closeCard() {
     currentId = null;
@@ -29,6 +48,9 @@
   }
 
   function openYamen() {
+    // 貢院沒有外連「入山」，進貢院即視同完整走訪一次（讓集句/山靈/信物不死鎖）
+    const ySite = window.HMJS_SITES.find((s) => s.isYamen);
+    if (ySite) window.HMJSBus?.emit?.('back', { site: ySite, awayMs: 120000 });
     const el = document.getElementById('yamen');
     const cards = window.HMJS_EXAMS.map((e) => {
       const m = window.HMJS_SITES.find((s) => s.id === e.mountainId);

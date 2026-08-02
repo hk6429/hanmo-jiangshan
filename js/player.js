@@ -11,12 +11,15 @@
 
   function setSprite(now) {
     const img = document.getElementById('player-img');
-    if (!moving) { img.src = 'assets/img/player_idle.png'; return; }
+    const sp = window.HMJS_SPRITES || { idle: 'assets/img/player_idle.png',
+      walk1: 'assets/img/player_walk1.png', walk2: 'assets/img/player_walk2.png' };
+    if (!moving) { img.src = sp.idle; return; }
     if (now - lastSwap > 160) { walkFrame = 1 - walkFrame; lastSwap = now; }
-    img.src = 'assets/img/player_walk' + (walkFrame + 1) + '.png';
+    img.src = walkFrame ? sp.walk2 : sp.walk1;
   }
 
   function tick(now) {
+    const SPEED_NOW = SPEED * (window.HMJS_SPEED_MULT || 1);
     let dx = 0, dy = 0;
     if (keys.size) {
       target = null; // 鍵盤優先，取消點擊目標
@@ -24,12 +27,12 @@
       if (keys.has('left')) dx -= 1; if (keys.has('right')) dx += 1;
       if (dx || dy) {
         const n = Math.hypot(dx, dy);
-        x += (dx / n) * SPEED; y += (dy / n) * SPEED;
+        x += (dx / n) * SPEED_NOW; y += (dy / n) * SPEED_NOW;
         if (dx) document.getElementById('player').classList.toggle('face-left', dx < 0);
       }
       moving = !!(dx || dy);
     } else if (target) {
-      const s = HMJSLogic.stepToward(x, y, target.x, target.y, SPEED);
+      const s = HMJSLogic.stepToward(x, y, target.x, target.y, SPEED_NOW);
       x = s.x; y = s.y; moving = !s.arrived;
       if (s.facingLeft !== null)
         document.getElementById('player').classList.toggle('face-left', s.facingLeft);
@@ -43,12 +46,19 @@
     setSprite(now);
     HMJSMap.applyCamera(x, y);
     if (moveCb) moveCb(x, y);
+    window.HMJSBus?.emit?.('tick', { x, y });
     requestAnimationFrame(tick);
   }
 
   window.HMJSPlayer = {
     init(sx, sy) {
       x = sx; y = sy;
+      // 換袍 sprite 缺圖 → 退回預設書生裝，不讓主角變破圖
+      const pimg = document.getElementById('player-img');
+      pimg.onerror = () => {
+        if (window.HMJS_SPRITES) { window.HMJS_SPRITES = null; pimg.src = 'assets/img/player_idle.png'; }
+        else pimg.onerror = null;
+      };
       addEventListener('keydown', (e) => {
         const k = KEYMAP[e.code];
         if (k) { keys.add(k); e.preventDefault(); }

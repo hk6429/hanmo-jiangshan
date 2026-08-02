@@ -1,0 +1,8 @@
+name = "hanmo-jiangshan"
+compatibility_date = "2026-07-26"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "PRESENCE_DB"
+database_name = "cap-exam-hub-presence"
+database_id = "f1777185-c507-4945-8747-0b78ce86916a"

@@ -1,0 +1,23 @@
+// data/exams.js — 貢院四卡（dateNote 依官方公告填寫，一年更新一次）
+window.HMJS_EXAMS = [
+  { id: 'cap', name: '國中教育會考',
+    intro: '國三升學測驗。國文科考閱讀理解、語文知識與文意判讀，全選擇題 48 題左右，另有寫作測驗一篇。',
+    dateNote: '116 年會考：2027/5/15–16（官方公告）',
+    officialName: '國中教育會考網站', officialUrl: 'https://cap.rcpet.edu.tw/',
+    mountainId: 'cap-guowen' },
+  { id: 'gsat', name: '大學學測',
+    intro: '高三上學期末的大學入學測驗。國文科分國綜（選擇＋混合題）與國寫（作文兩篇）。',
+    dateNote: '116 學年學測：2027/1/22–24（大考中心暫定日期，正式簡章 115/8/4 公告）',
+    officialName: '大考中心', officialUrl: 'https://www.ceec.edu.tw/',
+    mountainId: 'gsat-guowen' },
+  { id: 'ast', name: '分科測驗（原指考）',
+    intro: '高三畢業後七月的進階入學測驗。現制不考國文，國文採計學測成績——想拚分科，國文得先在學測站穩。',
+    dateNote: '116 學年分科測驗：2027/7/10–11（大考中心暫定日期，正式簡章 115/8/4 公告）',
+    officialName: '大考中心', officialUrl: 'https://www.ceec.edu.tw/',
+    mountainId: 'gsat-guowen' },
+  { id: 'tvet', name: '四技二專統一入學測驗',
+    intro: '高職生的升學主戰場。國文科含選擇題與寫作，題材貼近職場與生活應用。',
+    dateNote: '116 學年考程尚未公布，請以官方網站為準',
+    officialName: '技專校院入學測驗中心', officialUrl: 'https://www.tcte.edu.tw/',
+    mountainId: 'tvet-guowen' },
+];

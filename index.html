@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>翰墨江山｜國學名山探險入口</title>
+<meta name="description" content="操控小書生走訪九座國學名山：會考、學測指考、統測國文題庫，字音字形、文法修辭、文言文與文豪故事，一張潑墨地圖全收錄。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<meta property="og:title" content="翰墨江山｜國學名山探險入口">
+<meta property="og:description" content="操控小書生走訪九座國學名山＋貢院備考資訊，一張潑墨地圖收錄九個國文練功站。">
+<meta property="og:image" content="assets/img/og.jpg">
+</head>
+<body>
+<div id="viewport">
+  <div id="mist" aria-hidden="true"></div><!-- 視差遠霧層 -->
+  <div id="world">
+    <img id="map-bg" src="assets/img/map_bg.jpg" alt="">
+    <div id="landmarks"></div>
+    <div id="player"><img id="player-img" src="assets/img/player_idle.png" alt="小書生"></div>
+  </div>
+  <header id="hud">
+    <h1>翰墨江山</h1>
+    <button id="atlas-btn" type="button">遊歷圖</button>
+  </header>
+  <aside id="site-card" hidden></aside>
+  <div id="yamen" class="overlay" hidden></div>
+  <div id="atlas" class="overlay" hidden></div>
+  <p id="hint">方向鍵／WASD 移動，手機點哪走哪；走近山頭看介紹</p>
+</div>
+<script src="data/sites.js"></script>
+<script src="data/exams.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/map.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/stamps.js"></script>
+<script src="js/player.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

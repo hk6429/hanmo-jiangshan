@@ -20,10 +20,6 @@
         name.className = 'lm-name';
         name.textContent = s.mountain;
         el.append(img, name);
-        // 滑鼠指到山頭 → 小書生自動跑過去（觸控裝置不會觸發 mouse pointerenter）
-        el.addEventListener('pointerenter', (ev) => {
-          if (ev.pointerType === 'mouse') window.HMJSPlayer?.walkTo(s.x, s.y);
-        });
         // 點／觸山頭 → 已在附近直接開卡，否則自動跑過去（到了由鄰近偵測開卡）
         el.addEventListener('pointerdown', (ev) => ev.stopPropagation());
         el.addEventListener('click', (ev) => {

@@ -113,7 +113,7 @@ img[src*="icon_inkdrop"] { animation: hme-glow 1.8s ease-in-out infinite; }
     world.appendChild(wrap);
 
     const steps = [
-      { text: '歡迎來到翰墨江山！滑鼠指山或點一下，小書生就會走過去' },
+      { text: '歡迎來到翰墨江山！點一下山頭，小書生就會走過去' },
       { text: '走近山頭就能看到這座山的來歷，點「入山」開始修行',
         before() { if (nearest) { wrap.style.left = nearest.x + 'px'; wrap.style.top = (nearest.y - 180) + 'px'; } } },
       { text: '集滿印章可以升功名，右上「遊歷圖」看收藏' },

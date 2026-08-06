@@ -37,7 +37,7 @@
   var unsaved = 0;         // 尚未落盤的位移量
   var unlocked = [];       // 已達里程碑的坐騎 id
   var wardrobe = [];       // 已購 id（配飾＋坐騎混放）
-  var outfit = { mount: null, acc: [] };
+  var outfit = { mount: null, acc: [], show: null }; // show = 展示中的配飾（角色一次展示一件）
   var prev = null;         // 上一幀座標
   var shopPanel = null;    // 開啟中的商店面板
 
@@ -58,12 +58,6 @@
       '@keyframes hms-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }' +
       '.hms-mount-icon { position: absolute; left: -52px; top: -18px; width: 60px;' +
       '  pointer-events: none; animation: hms-float 2.4s ease-in-out infinite; }' +
-      '#player #player-img { position: relative; z-index: 2; }' +
-      '.hms-acc-icon { position: absolute; pointer-events: none; }' +
-      '.hms-acc-hat { top: -13%; left: 50%; width: 58%; transform: translateX(-50%) rotate(-5deg); z-index: 3; }' +
-      '.hms-acc-umbrella { top: 2%; right: -30%; width: 72%; transform: rotate(38deg); z-index: 1; }' +
-      '.hms-acc-cloak { top: 22%; left: -16%; width: 70%; transform: rotate(6deg); z-index: 1; }' +
-      '.hms-acc-jade { top: 34%; left: 56%; width: 13%; transform: translateX(-50%); z-index: 3; }' +
       '.hms-shop-sec { margin: 14px 0 6px; color: #6b3226; font-size: 17px;' +
       '  letter-spacing: 3px; border-bottom: 1px solid #d9cfae; padding-bottom: 4px; }' +
       '.hms-shop-balance { color: #8a5a2b; font-weight: 700; margin-bottom: 4px; }' +
@@ -108,6 +102,9 @@
     if (o && typeof o === 'object') {
       outfit.mount = o.mount || null;
       outfit.acc = Array.isArray(o.acc) ? o.acc : [];
+      outfit.show = (o.show && outfit.acc.indexOf(o.show) !== -1)
+        ? o.show
+        : (outfit.acc.length ? outfit.acc[outfit.acc.length - 1] : null);
     }
   }
   function saveOutfit() { bus.save('hmjs_outfit', outfit); }
@@ -169,26 +166,41 @@
     }
   }
 
-  // ── 配飾外觀 ──────────────────────────────────────────────
-  function applyAccs() {
-    var player = document.getElementById('player');
-    if (!player) return;
-    for (var i = 0; i < ACCS.length; i++) {
-      var id = ACCS[i].id;
-      var el = player.querySelector('.hms-acc-' + id);
-      if (outfit.acc.indexOf(id) !== -1) {
-        if (!el) {
-          el = document.createElement('img');
-          el.className = 'hms-acc-icon hms-acc-' + id;
-          el.alt = '';
-          el.onerror = function () { this.style.display = 'none'; };
-          el.src = 'assets/img/acc_' + id + '.png';
-          player.appendChild(el);
-        }
-      } else if (el) {
-        el.remove();
+  // ── 配飾外觀：整組換成「穿好的」全身 sprite ────────────────
+  // 角色一次展示一件（outfit.show），sprite 命名：
+  // assets/img/player_{base|rank3|rank5}_{acc}_{idle|walk1|walk2}.png
+  function accSpritePath(tier, acc, frame) {
+    return 'assets/img/player_' + tier + '_' + acc + '_' + frame + '.png';
+  }
+  function resolveSprites() {
+    var tier = window.HMJS_RANK_TIER || 'base';
+    var show = (outfit.show && outfit.acc.indexOf(outfit.show) !== -1) ? outfit.show : null;
+    if (show && !window.HMJS_ACC_SPRITES_BROKEN) {
+      window.HMJS_SPRITES = {
+        idle: accSpritePath(tier, show, 'idle'),
+        walk1: accSpritePath(tier, show, 'walk1'),
+        walk2: accSpritePath(tier, show, 'walk2')
+      };
+      window.HMJS_ACC_SPRITES_ACTIVE = true;
+    } else {
+      window.HMJS_ACC_SPRITES_ACTIVE = false;
+      if (window.HMJS_RANK_SPRITES) {
+        window.HMJS_SPRITES = window.HMJS_RANK_SPRITES;
+      } else {
+        try { delete window.HMJS_SPRITES; } catch (e) { window.HMJS_SPRITES = undefined; }
       }
     }
+  }
+  window.HMJS_RESOLVE_SPRITES = resolveSprites;
+
+  function applyAccs() {
+    // 移除舊版覆蓋層殘留（曾以小圖疊在角色上）
+    var player = document.getElementById('player');
+    if (player) {
+      var olds = player.querySelectorAll('.hms-acc-icon');
+      for (var i = 0; i < olds.length; i++) olds[i].remove();
+    }
+    resolveSprites();
   }
 
   // ── 穿戴／購買 ────────────────────────────────────────────
@@ -217,7 +229,15 @@
       applyMount();
     } else {
       var idx = outfit.acc.indexOf(id);
-      if (idx === -1) outfit.acc.push(id); else outfit.acc.splice(idx, 1);
+      if (idx === -1) {
+        outfit.acc.push(id);
+        outfit.show = id;
+      } else {
+        outfit.acc.splice(idx, 1);
+        if (outfit.show === id) {
+          outfit.show = outfit.acc.length ? outfit.acc[outfit.acc.length - 1] : null;
+        }
+      }
       applyAccs();
     }
     saveOutfit();
@@ -235,7 +255,7 @@
           ' 步解鎖（目前 ' + Math.floor(distance) + '）</div>'
         : '<div class="hms-item-note">坐騎．腳程 ×' + item.mult + '</div>';
     } else {
-      note = '<div class="hms-item-note">配飾．穿上後角色隨身展示，名帖也會記上</div>';
+      note = '<div class="hms-item-note">配飾．穿上直接換裝展示（多件時展示最後穿上的），名帖全記上</div>';
     }
     var btn;
     if (!has) {

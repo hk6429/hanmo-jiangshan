@@ -204,19 +204,31 @@
   function rankName(lv) { return lv < 0 ? '白身' : RANKS[lv].name; }
 
   function applySprites(lv) {
-    // 舉人（>=2）換烏紗帽官服組；狀元（==4）換紅袍組；否則刪除全域
+    // 舉人（>=2）換烏紗帽官服組；狀元（==4）換紅袍組；否則回白身。
+    // 只負責算「袍色層」，最終 sprite 由 shop.js 的 HMJS_RESOLVE_SPRITES
+    // 合成（袍色×展示中配飾）；shop 未載入時退回原行為。
     if (lv === 4) {
-      window.HMJS_SPRITES = {
+      window.HMJS_RANK_TIER = 'rank5';
+      window.HMJS_RANK_SPRITES = {
         idle: 'assets/img/player_rank5_idle.png',
         walk1: 'assets/img/player_rank5_walk1.png',
         walk2: 'assets/img/player_rank5_walk2.png'
       };
     } else if (lv >= 2) {
-      window.HMJS_SPRITES = {
+      window.HMJS_RANK_TIER = 'rank3';
+      window.HMJS_RANK_SPRITES = {
         idle: 'assets/img/player_rank3_idle.png',
         walk1: 'assets/img/player_rank3_walk1.png',
         walk2: 'assets/img/player_rank3_walk2.png'
       };
+    } else {
+      window.HMJS_RANK_TIER = 'base';
+      window.HMJS_RANK_SPRITES = null;
+    }
+    if (typeof window.HMJS_RESOLVE_SPRITES === 'function') {
+      window.HMJS_RESOLVE_SPRITES();
+    } else if (window.HMJS_RANK_SPRITES) {
+      window.HMJS_SPRITES = window.HMJS_RANK_SPRITES;
     } else {
       try { delete window.HMJS_SPRITES; } catch (e) { window.HMJS_SPRITES = undefined; }
     }

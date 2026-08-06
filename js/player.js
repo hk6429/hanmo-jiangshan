@@ -53,9 +53,15 @@
   window.HMJSPlayer = {
     init(sx, sy) {
       x = sx; y = sy;
-      // 換袍 sprite 缺圖 → 退回預設書生裝，不讓主角變破圖
+      // 換袍/配飾 sprite 缺圖 → 逐層退回，不讓主角變破圖：
+      // 配飾裝缺圖先退回袍色裝（標記 broken 交給 shop 的 resolver），再缺才回預設書生裝
       const pimg = document.getElementById('player-img');
       pimg.onerror = () => {
+        if (window.HMJS_ACC_SPRITES_ACTIVE && typeof window.HMJS_RESOLVE_SPRITES === 'function') {
+          window.HMJS_ACC_SPRITES_BROKEN = true;
+          window.HMJS_RESOLVE_SPRITES();
+          return;
+        }
         if (window.HMJS_SPRITES) { window.HMJS_SPRITES = null; pimg.src = 'assets/img/player_idle.png'; }
         else pimg.onerror = null;
       };

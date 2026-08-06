@@ -25,6 +25,13 @@
     { id: 'jade', name: '玉佩', price: 120 },
   ];
 
+  // id→名稱對照，供名帖（social.js）等外部模組查詢
+  window.HMJS_GEAR_NAMES = (function () {
+    var m = {};
+    MOUNTS.concat(ACCS).forEach(function (it) { m[it.id] = it.name; });
+    return m;
+  })();
+
   var bus = null;
   var distance = 0;        // 累計移動 px
   var unsaved = 0;         // 尚未落盤的位移量
@@ -51,6 +58,12 @@
       '@keyframes hms-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }' +
       '.hms-mount-icon { position: absolute; left: -52px; top: -18px; width: 60px;' +
       '  pointer-events: none; animation: hms-float 2.4s ease-in-out infinite; }' +
+      '#player #player-img { position: relative; z-index: 2; }' +
+      '.hms-acc-icon { position: absolute; pointer-events: none; }' +
+      '.hms-acc-hat { top: -13%; left: 50%; width: 58%; transform: translateX(-50%) rotate(-5deg); z-index: 3; }' +
+      '.hms-acc-umbrella { top: 2%; right: -30%; width: 72%; transform: rotate(38deg); z-index: 1; }' +
+      '.hms-acc-cloak { top: 22%; left: -16%; width: 70%; transform: rotate(6deg); z-index: 1; }' +
+      '.hms-acc-jade { top: 34%; left: 56%; width: 13%; transform: translateX(-50%); z-index: 3; }' +
       '.hms-shop-sec { margin: 14px 0 6px; color: #6b3226; font-size: 17px;' +
       '  letter-spacing: 3px; border-bottom: 1px solid #d9cfae; padding-bottom: 4px; }' +
       '.hms-shop-balance { color: #8a5a2b; font-weight: 700; margin-bottom: 4px; }' +
@@ -156,6 +169,28 @@
     }
   }
 
+  // ── 配飾外觀 ──────────────────────────────────────────────
+  function applyAccs() {
+    var player = document.getElementById('player');
+    if (!player) return;
+    for (var i = 0; i < ACCS.length; i++) {
+      var id = ACCS[i].id;
+      var el = player.querySelector('.hms-acc-' + id);
+      if (outfit.acc.indexOf(id) !== -1) {
+        if (!el) {
+          el = document.createElement('img');
+          el.className = 'hms-acc-icon hms-acc-' + id;
+          el.alt = '';
+          el.onerror = function () { this.style.display = 'none'; };
+          el.src = 'assets/img/acc_' + id + '.png';
+          player.appendChild(el);
+        }
+      } else if (el) {
+        el.remove();
+      }
+    }
+  }
+
   // ── 穿戴／購買 ────────────────────────────────────────────
   function buy(id) {
     var item = findMount(id) || findAcc(id);
@@ -183,6 +218,7 @@
     } else {
       var idx = outfit.acc.indexOf(id);
       if (idx === -1) outfit.acc.push(id); else outfit.acc.splice(idx, 1);
+      applyAccs();
     }
     saveOutfit();
   }
@@ -199,7 +235,7 @@
           ' 步解鎖（目前 ' + Math.floor(distance) + '）</div>'
         : '<div class="hms-item-note">坐騎．腳程 ×' + item.mult + '</div>';
     } else {
-      note = '<div class="hms-item-note">配飾．遊歷圖與名帖展示</div>';
+      note = '<div class="hms-item-note">配飾．穿上後角色隨身展示，名帖也會記上</div>';
     }
     var btn;
     if (!has) {
@@ -297,6 +333,7 @@
     injectStyle();
     loadState();
     applyMount(); // 依 hmjs_outfit 還原坐騎倍率與小圖示
+    applyAccs();  // 依 hmjs_outfit 還原配飾外觀
 
     bus.on('tick', onTick);
 

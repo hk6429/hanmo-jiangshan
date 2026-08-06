@@ -312,6 +312,19 @@
     ctx.fillText(value, x + ctx.measureText(label).width + 130, y);
   }
 
+  // 穿戴中的坐騎＋配飾名稱（名稱表由 shop.js 掛在 window.HMJS_GEAR_NAMES）
+  function gearText() {
+    var names = window.HMJS_GEAR_NAMES || {};
+    var o = load('hmjs_outfit', null);
+    if (!o || typeof o !== 'object') return '';
+    var ids = [];
+    if (o.mount) ids.push(o.mount);
+    if (Array.isArray(o.acc)) ids = ids.concat(o.acc);
+    var out = [];
+    for (var i = 0; i < ids.length; i++) if (names[ids[i]]) out.push(names[ids[i]]);
+    return out.join('・');
+  }
+
   function getNickname() {
     var nick = load('hmjs_nickname', '');
     if (!nick) {
@@ -355,6 +368,8 @@
     try { qiTotal = +Bus.getQi() || 0; } catch (e) {}
     labelValue(ctx, '文氣值', String(qiTotal), x, y);
     labelValue(ctx, '集句數', String(verseCount()) + ' 聯', x, y + 66);
+    var gear = gearText();
+    if (gear) labelValue(ctx, '隨身行頭', gear, x, y + 132);
 
     // 最近三則札記
     y += 190;

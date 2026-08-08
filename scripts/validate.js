@@ -10,7 +10,7 @@ const sites = loadWindowScript('data/sites.js', 'HMJS_SITES');
 const exams = loadWindowScript('data/exams.js', 'HMJS_EXAMS');
 const MAP_W = 2600, MAP_H = 1600;
 
-assert.strictEqual(sites.length, 10, '必須十個地點');
+assert.strictEqual(sites.length, 11, '必須十一個地點');
 const ids = new Set();
 for (const s of sites) {
   for (const k of ['id','mountain','siteName','tagline','stats','audience'])
@@ -32,7 +32,7 @@ for (const e of exams) {
 }
 // ── 遊戲化 meta 資料層 ──
 const questions = loadWindowScript('data/meta/questions.js', 'HMJS_QUESTIONS');
-assert.strictEqual(Object.keys(questions).length, 10, '題庫必須十山');
+assert.strictEqual(Object.keys(questions).length, 11, '題庫必須十一景');
 for (const id of ids) {
   const qs = questions[id];
   assert.ok(Array.isArray(qs) && qs.length === 12, `${id} 題數必須 12`);
@@ -59,7 +59,7 @@ for (const p of global.window.HMJS_POEMS)
 assert.strictEqual(global.window.HMJS_QUOTES.length, 30, '語錄必須 30 則');
 const terms = loadWindowScript('data/meta/misc.js', 'HMJS_TERMS');
 assert.strictEqual(terms.length, 24, '節氣必須 24');
-assert.strictEqual(Object.keys(global.window.HMJS_HINTS).length, 10, '暗示必須 10 山');
+assert.strictEqual(Object.keys(global.window.HMJS_HINTS).length, 11, '暗示必須 11 景');
 assert.strictEqual(global.window.HMJS_RIDDLES.length, 4, '謎題必須 4 則');
 for (const r of global.window.HMJS_RIDDLES)
   assert.ok(r.x > 0 && r.y > 0 && r.opts.length === 4 && r.ans >= 0 && r.ans <= 3 && r.spirit,

@@ -1,4 +1,4 @@
-// data/sites.js — 翰墨江山十景單一來源（文案 2026-08-02 依各站 <title>/<meta> 核實）
+// data/sites.js — 翰墨江山十一景單一來源（文案依各站 <title>/<meta> 核實）
 window.HMJS_SITES = [
   { id: 'cap-guowen', mountain: '泰山', siteName: '會考國文題庫',
     url: 'https://cap-guowen.pages.dev/',
@@ -45,6 +45,11 @@ window.HMJS_SITES = [
     tagline: '上梁山，闖書海',
     stats: '閱讀理解遠征',
     audience: '國中生', x: 2350, y: 750 },
+  { id: 'judou-academy', mountain: '大觀園', siteName: '句讀學堂',
+    url: 'https://judou-academy.pages.dev/',
+    tagline: '一筆句讀，讀懂文氣',
+    stats: '符號、運用、斷句分區練功，弱點複習、句讀四靈與回合制對戰',
+    audience: '國小到高中', x: 1200, y: 1100 },
   { id: 'yamen', mountain: '貢院', siteName: '備考資訊', url: null, isYamen: true,
     tagline: '科舉重地，考程情報',
     stats: '會考・學測・分科・統測 四張資訊卡',

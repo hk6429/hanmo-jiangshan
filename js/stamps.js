@@ -15,7 +15,7 @@
     }).join('');
     const full = cache.length >= window.HMJS_SITES.length;
     return `<ul class="atlas-list">${rows}</ul>
-      ${full ? `<blockquote class="egg">十景遊遍——<br>「翰墨為山手自攀，江山何處不書關；<br>少年若解勤為徑，踏破雲峰亦等閒。」</blockquote>` : ''}`;
+      ${full ? `<blockquote class="egg">十一景遊遍——<br>「翰墨為山手自攀，江山何處不書關；<br>少年若解勤為徑，踏破雲峰亦等閒。」</blockquote>` : ''}`;
   }
 
   function renderAtlas() {

@@ -1,5 +1,5 @@
 #!/bin/bash
-# smoke.sh — 十個外連與四個官方連結全 200/30x
+# smoke.sh — 所有作品外連與四個官方連結全 200/30x
 set -u
 fail=0
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"

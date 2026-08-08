@@ -322,7 +322,7 @@
         '<span class="hmk-cell-name">' + esc(name) + '</span>' +
         '<span class="hmk-cell-stage">' + (got ? '已收服' : '隱藏') + '</span></div>';
     });
-    return '<div class="hmk-sec-title">十山山靈</div>' +
+    return '<div class="hmk-sec-title">十一景山靈</div>' +
       '<div class="hmk-grid">' + cells.join('') + '</div>' +
       (hiddenCells.length
         ? '<div class="hmk-sec-title">隱藏山靈</div><div class="hmk-grid">' + hiddenCells.join('') + '</div>'
@@ -366,7 +366,7 @@
     try { Bus.qi(5, 'verse_' + site.id + '_' + c); } catch (e) {}
   }
 
-  function allTenCollected() {
+  function allSitesCollected() {
     var store = load('hmjs_verses', {});
     var list = sites();
     if (!list.length) return false;
@@ -608,9 +608,9 @@
     var verseHtml = secs
       ? '<ul class="hmk-verse-list">' + secs + '</ul>'
       : '<div class="hmk-empty">尚未集得聯句。開啟宣紙卡聽文人吟半句，入山歸來即贈整聯。</div>';
-    var scrollBtn = allTenCollected()
+    var scrollBtn = allSitesCollected()
       ? '<button type="button" class="hmk-scrollbtn" id="hmk-scroll-dl">集句成卷（下載卷軸）</button>'
-      : '<div class="hmk-empty">十山各集得一聯後，可將名句裝裱成直式卷軸下載。</div>';
+      : '<div class="hmk-empty">十一景各集得一聯後，可將名句裝裱成直式卷軸下載。</div>';
     // 語錄圖鑑（併入下半部）
     var all = quotes();
     var got = load('hmjs_quotes', []);
